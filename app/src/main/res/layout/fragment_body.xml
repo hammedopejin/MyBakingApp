@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_body_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView android:id="@+id/body_part_textview"
+            style="@style/TextViewStyle"
+            android:textSize="16sp" />
+    </ScrollView>
+
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+        android:layout_weight="1">
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back"
+            app:backgroundTint="@android:color/background_light"
+            app:fabSize="auto" />
+
+        <TextView
+            android:id="@+id/currentStep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="20sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/next"
+            app:backgroundTint="@android:color/background_light"
+            app:fabSize="auto" />
+
+    </RelativeLayout>
+</LinearLayout>

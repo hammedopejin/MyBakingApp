@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="app_name">My Baking App</string>
+    <string name="appwidget_text">Recipes</string>
+    <string name="add_widget">Add widget</string>
+    <string name="ingredients">ingredients</string>
+    <string name="baking_steps">BAKING STEPS</string>
+    <string name="steps">steps</string>
+    <string name="my_baking_app">mybakingapp</string>
+    <string name="position">position</string>
+    <string name="tablet">tablet</string>
+    <string name="playback_position">playback_position</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="ingredients_tag">Ingredients:</string>
+    <string name="no_video_to_paly">No Video for this Step!</string>
+
+</resources>

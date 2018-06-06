@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LayoutView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/whitebackground"
+    android:orientation="vertical"
+    tools:context=".IngredientActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        style="@style/LayoutViewBottom">
+
+        <LinearLayout
+            style="@style/LayoutViewBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextViewStyle"
+                android:layout_weight="2"
+                android:text="Ingredients:"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/ingredients_tv"
+                style="@style/TextViewStyle"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/whitebackground"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</LinearLayout>
