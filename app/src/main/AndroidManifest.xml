@@ -26,8 +26,7 @@
                 android:value=".RecipeActivity" />
         </activity>
         <activity
-            android:name=".StepActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:name=".StepActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".IngredientActivity" />

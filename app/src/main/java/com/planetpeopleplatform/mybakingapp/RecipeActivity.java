@@ -1,5 +1,7 @@
 package com.planetpeopleplatform.mybakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -98,6 +100,14 @@ public class RecipeActivity extends AppCompatActivity implements
 
                     mRecipes = response.body();
                     insertData();
+                    StringBuilder recipeIngredients = new StringBuilder();
+                    for (int i = 0; i < mRecipes.get(0).getIngredients().size(); i++) {
+                        recipeIngredients.append(mRecipes.get(0).getIngredients().get(i).getIngredient()).append("\n");
+                    }
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), MyBakingAppWidget.class));
+                    MyBakingAppWidget.updateRecipeWidgets(getApplication(), appWidgetManager, mRecipes.get(0).getName(), recipeIngredients.toString(),
+                             appWidgetIds);
 
                     mRecipeAdapter = new RecipeAdapter(getApplicationContext(), mRecipes,  RecipeActivity.this);
                     mRecipeRecyclerView.setAdapter(mRecipeAdapter);
@@ -111,7 +121,7 @@ public class RecipeActivity extends AppCompatActivity implements
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<List<Recipe>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
                     Toast.makeText(RecipeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.e("TAG", t.getMessage() );
 
@@ -236,6 +246,16 @@ public class RecipeActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(int position) {
+
+        StringBuilder recipeIngredients = new StringBuilder();
+        for (int i = 0; i < mRecipes.get(position).getIngredients().size(); i++) {
+            recipeIngredients.append(mRecipes.get(position).getIngredients().get(i).getIngredient()).append("\n");
+        }
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, MyBakingAppWidget.class));
+        MyBakingAppWidget.updateRecipeWidgets(this, appWidgetManager, mRecipes.get(position).getName(), recipeIngredients.toString().toString(),
+                 appWidgetIds);
 
         Intent ingredientIntent = new Intent(RecipeActivity.this, IngredientActivity.class);
 

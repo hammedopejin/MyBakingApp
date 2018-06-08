@@ -1,13 +1,16 @@
 package com.planetpeopleplatform.mybakingapp;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.planetpeopleplatform.mybakingapp.model.Step;
@@ -24,14 +27,14 @@ import butterknife.ButterKnife;
 
 public class StepActivity extends AppCompatActivity {
 
-    private int mPosition;
-    private List<Step> mStepArray;
-    private FragmentManager fragmentManager;
-    private HeadFragment headFragment;
-    private BodyFragment bodyFragment;
+    private ActionBar mSupportActionBar;
 
     @BindView(R.id.activity_step_frame_layout)
     FrameLayout frameLayout;
+    @BindView(R.id.body_container)
+    FrameLayout bodyFrameLayout;
+    @BindView(R.id.head_container)
+    FrameLayout headFrameLayout;
 
 
     @Override
@@ -39,22 +42,24 @@ public class StepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step);
         ButterKnife.bind(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mSupportActionBar = getSupportActionBar();
+        assert mSupportActionBar != null;
+        mSupportActionBar.setDisplayHomeAsUpEnabled(true);
 
         // Only create new fragments when there is no previously saved state
         if(savedInstanceState == null) {
 
             Bundle extra = getIntent().getBundleExtra("bundle");
-            mStepArray = extra.getParcelableArrayList(getString(R.string.steps));
-            mPosition = extra.getInt(getString(R.string.position));
-            String videoUrl = mStepArray.get(mPosition).getVideoURL();
+            List<Step> mStepArray = extra.getParcelableArrayList(getString(R.string.steps));
+            int position = extra.getInt(getString(R.string.position));
+            assert mStepArray != null;
+            String videoUrl = mStepArray.get(position).getVideoURL();
 
             // Add the fragment to its container using a FragmentManager and a Transaction
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
             // Create a new head BodyPartFragment
-            headFragment = new HeadFragment();
+            HeadFragment headFragment = new HeadFragment();
 
             fragmentManager.beginTransaction()
                     .add(R.id.head_container, headFragment)
@@ -63,52 +68,14 @@ public class StepActivity extends AppCompatActivity {
 
 
             // Create and display the body BodyPartFragments
-            bodyFragment = new BodyFragment();
+            BodyFragment bodyFragment = new BodyFragment();
+                fragmentManager.beginTransaction()
+                        .add(R.id.body_container, bodyFragment)
+                        .commit();
+                BodyFragment.setStepData(mStepArray, position);
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.body_container, bodyFragment)
-                    .commit();
-            BodyFragment.setStepData(mStepArray, mPosition);
 
         }
-
-    }
-
-    @SuppressLint("InlinedApi")
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checking the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //First Hide other objects.
-            hideSystemUi();
-            headFragment.mPlayerView.setLayoutParams(new FrameLayout.LayoutParams(Resources.getSystem().getDisplayMetrics().widthPixels,
-                    Resources.getSystem().getDisplayMetrics().heightPixels));
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            //unhide your objects here.
-            headFragment.mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().show();
-            }
-            headFragment.mPlayerView.setLayoutParams(new FrameLayout.LayoutParams(Resources.getSystem().getDisplayMetrics().widthPixels,
-                    Resources.getSystem().getDisplayMetrics().heightPixels/2));
-            fragmentManager.beginTransaction().show(bodyFragment).commit();
-        }
-    }
-
-    @SuppressLint("InlinedApi")
-    private void hideSystemUi() {
-        headFragment.mPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-
-
-        fragmentManager.beginTransaction().hide(bodyFragment).commit();
 
     }
 
@@ -121,5 +88,24 @@ public class StepActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if ( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ){
+            mSupportActionBar.hide();
+            if (Build.VERSION.SDK_INT < 16) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }else {
+                View decorView = getWindow().getDecorView();
+                int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                decorView.setSystemUiVisibility(uiOptions);
+            }
+            bodyFrameLayout.setVisibility(View.GONE);
+            headFrameLayout.setLayoutParams(new LinearLayoutCompat.LayoutParams(Resources.getSystem().getDisplayMetrics().widthPixels,
+                    Resources.getSystem().getDisplayMetrics().heightPixels));
+        }
     }
 }

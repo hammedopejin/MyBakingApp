@@ -4,14 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical">
 
-<GridView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/widget_grid_view"
-    android:gravity="center"
-    android:numColumns="1"/>
-
-
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -30,6 +22,7 @@
             android:contentDescription="@string/appwidget_text"
             android:textColor="#ffffff"
             android:textSize="24sp"
+            android:text="Recipe"
             android:textStyle="bold|italic"
             android:textAlignment="center"
             android:layout_gravity="center"/>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
     private SimpleExoPlayer mExoPlayer;
 
     private static Long seek = (long) 0;
+    private static Boolean playback = false;
 
     private static final String TAG = HeadFragment.class.getSimpleName();
 
@@ -65,21 +67,22 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
 
         if(savedInstanceState != null) {
             if (null != mVideoUrl) {
-                if (!mVideoUrl.isEmpty()) {
+                if (!TextUtils.isEmpty(mVideoUrl)) {
                     initializeMediaSession();
                     initializePlayer(Uri.parse(mVideoUrl));
                 }
             }
             if(null != mExoPlayer) {
+                mExoPlayer.setPlayWhenReady(savedInstanceState.getBoolean(getString(R.string.playing_paused)));
                 mExoPlayer.seekTo(savedInstanceState.getLong(getString(R.string.playback_position), 0));
             }
         } else {
             if (null != mVideoUrl) {
-                if (!mVideoUrl.isEmpty()) {
+                if (!TextUtils.isEmpty(mVideoUrl)) {
                     initializeMediaSession();
                     initializePlayer(Uri.parse(mVideoUrl));
                 }else {
-                    Toast.makeText(getActivity(), R.string.no_video_to_paly, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.no_video_to_paly, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -95,6 +98,8 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
     @Override
     public void onSaveInstanceState(@NonNull Bundle currentState) {
         currentState.putLong(getString(R.string.playback_position), seek);
+
+        currentState.putBoolean(getString(R.string.playing_paused), playback);
         super.onSaveInstanceState(currentState);
     }
 
@@ -199,14 +204,16 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
     private void pausePlayer(){
         if (mExoPlayer != null) {
             seek = mExoPlayer.getContentPosition();
+            playback = mExoPlayer.getPlayWhenReady();
             mExoPlayer.setPlayWhenReady(false);
         }
     }
 
     private void resumePlayer(){
         if (mExoPlayer != null) {
-            if(null != seek)
-            mExoPlayer.setPlayWhenReady(true);
+            if(null != seek){
+                mExoPlayer.seekTo(seek);
+            }
         }
     }
 
@@ -217,7 +224,6 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
         if(null != mMediaSession) {
             mMediaSession.setActive(false);
         }
@@ -265,11 +271,15 @@ public class HeadFragment extends Fragment implements ExoPlayer.EventListener {
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    mExoPlayer.getCurrentPosition(), 1f);
+            if (mExoPlayer != null) {
+                mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                        mExoPlayer.getCurrentPosition(), 1f);
+            }
         } else if((playbackState == ExoPlayer.STATE_READY)){
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    mExoPlayer.getCurrentPosition(), 1f);
+            if (mExoPlayer != null) {
+                mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                        mExoPlayer.getCurrentPosition(), 1f);
+            }
         }
         mMediaSession.setPlaybackState(mStateBuilder.build());
     }

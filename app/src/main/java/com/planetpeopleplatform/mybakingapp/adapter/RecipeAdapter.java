@@ -3,6 +3,7 @@ package com.planetpeopleplatform.mybakingapp.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         holder.mRecipeNameTV.setText(mRecipe.get(position).getName());
 
-        if (mRecipe.get(position).getImage().isEmpty()) {
+        if (TextUtils.isEmpty(mRecipe.get(position).getImage())) {
             switch (position) {
                 case 0:
                     holder.mImageView.setImageResource(R.drawable.nutella_pie);

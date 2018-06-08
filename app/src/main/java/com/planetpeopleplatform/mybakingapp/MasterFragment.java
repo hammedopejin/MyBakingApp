@@ -67,6 +67,8 @@ public class MasterFragment extends Fragment implements IngredientAdapter.Ingred
             ingredientArray = extra.getParcelableArrayList(getString(R.string.ingredients));
             mStepArray = extra.getParcelableArrayList(getString(R.string.steps));
             mPosition = extra.getInt(getString(R.string.position));
+
+
         }
 
         StringBuilder ingredientString = new StringBuilder();
